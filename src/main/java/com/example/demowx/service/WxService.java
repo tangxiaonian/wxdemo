@@ -85,7 +85,7 @@ public class WxService {
     }
 
     /**
-     * 回复微信消息
+     * 处理用户发送的消息
      * @param response
      * @param requestMap
      */
@@ -127,6 +127,26 @@ public class WxService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 处理事件消息
+     * @param response
+     * @param requestMap
+     */
+    public void responseEventMessage(HttpServletResponse response,
+                                     Map<String, String> requestMap) {
+
+        switch (requestMap.get("Event")) {
+            case "subscribe":
+
+                break;
+
+            case "unsubscribe":
+
+                break;
+        }
+
     }
 
 }

@@ -74,7 +74,14 @@ public class WxController {
 
         System.out.println("消息内容为：--->"+requestMap);
 
-        wxService.responseMessage(response,requestMap);
+        switch (request.getParameter("MsgType")) {
+            case "event":
+                wxService.responseEventMessage(response,requestMap);
+                break;
+            default:
+                wxService.responseMessage(response,requestMap);
+                break;
+        }
     }
 
 }
