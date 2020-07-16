@@ -27,6 +27,12 @@ public class WxController {
     @Resource
     private WxService wxService;
 
+    /**
+     * 测试连接微信服务器响应
+     * @param request
+     * @param response
+     * @throws IOException
+     */
     @GetMapping(value = {"/",""})
     public void indexGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
@@ -53,16 +59,22 @@ public class WxController {
         }
     }
 
+    /**
+     * 接收服务器推送的xml包
+     * @param request
+     * @param response
+     * @throws IOException
+     */
     @PostMapping(value = {"/",""})
     public void indexPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-
-        System.out.println( "Post 接收到了...." );
-
+        System.out.println( "post方式接收到了消息...." );
+        // 解析消息包
         Map<String, String> requestMap = wxService.requestMap(request.getInputStream());
 
-        System.out.println(requestMap);
+        System.out.println("消息内容为：--->"+requestMap);
 
         wxService.responseMessage(response,requestMap);
     }
+
 }

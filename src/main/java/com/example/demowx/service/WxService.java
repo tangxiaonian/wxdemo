@@ -1,11 +1,15 @@
 package com.example.demowx.service;
 
+import com.example.demowx.domain.BaseMessage;
+import com.example.demowx.domain.ImageMessage;
+import com.thoughtworks.xstream.XStream;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,6 +30,9 @@ import java.util.Map;
 @Service
 public class WxService {
 
+    @Resource
+    public MessageService messageServiceImpl;
+
     /**
      * 解析请求为map
      * @param inputStream
@@ -39,7 +46,6 @@ public class WxService {
             // 根元素
             Element rootElement = document.getRootElement();
             List<Element> elements = rootElement.elements();
-
             elements.forEach(element -> {
                         infoMap.put(element.getName(), element.getStringValue());
                     }
@@ -85,19 +91,42 @@ public class WxService {
      */
     public void responseMessage(HttpServletResponse response,
                                 Map<String, String> requestMap) {
+        // 解决消息乱码...
+        response.setCharacterEncoding("UTF-8");
+
+        // 获取消息的类型
+        String msgType = requestMap.get("MsgType");
+
+        System.out.println("消息类型为：" + msgType);
+
+        BaseMessage baseMessage = null;
+
+        XStream xStream = new XStream();
+
+        switch (msgType) {
+            case "text" :
+                baseMessage = messageServiceImpl.handlerTextMessage(requestMap,xStream,baseMessage);
+                break;
+            case "image":
+                baseMessage = null;
+                xStream.processAnnotations(ImageMessage.class);
+                break;
+        }
+        // 回复数据
         try {
             PrintWriter printWriter = response.getWriter();
-            printWriter.print("<xml>\n" +
-                    "  <ToUserName><![CDATA["+requestMap.get("FromUserName")+"]]></ToUserName>\n" +
-                    "  <FromUserName><![CDATA["+requestMap.get("ToUserName")+"]]></FromUserName>\n" +
-                    "  <CreateTime>"+System.currentTimeMillis()+"</CreateTime>\n" +
-                    "  <MsgType><![CDATA[text]]></MsgType>\n" +
-                    "  <Content><![CDATA[why?]]></Content>\n" +
-                    "</xml>");
+            if (baseMessage != null) {
+                String xml = xStream.toXML(baseMessage);
+                System.out.println("回复的内容为：---》\n" + xml);
+                printWriter.print(xml);
+            }else {
+                printWriter.print("success");
+            }
             printWriter.flush();
             printWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 }

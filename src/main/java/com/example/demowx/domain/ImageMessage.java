@@ -14,17 +14,23 @@ import java.util.Map;
  */
 @XStreamAlias("xml")
 @Data
-public class TextMessage extends BaseMessage{
-
-    @XStreamAlias("Content")
-    private String content;
+public class ImageMessage extends BaseMessage{
 
     @XStreamAlias("MsgType")
     private String msgType;
 
-    public TextMessage(Map<String, String> map,String content) {
+    @XStreamAlias("PicUrl")
+    private String picUrl;
+
+    @XStreamAlias("MediaId")
+    private String mediaId;
+
+    @XStreamAlias("MsgId")
+    private String msgId;
+
+    public ImageMessage(Map<String, String> map,
+                        String picUrl,String mediaId,String msgId) {
         super(map);
-        this.msgType = "text";
-        this.content = content;
+        this.msgType = "image";
     }
 }

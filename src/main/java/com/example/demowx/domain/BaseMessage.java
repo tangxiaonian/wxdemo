@@ -1,5 +1,6 @@
 package com.example.demowx.domain;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -13,12 +14,16 @@ import java.util.Map;
  * @Created by ASUS
  */
 @Data
+@XStreamAlias("xml")
 public class BaseMessage implements Serializable {
 
+    @XStreamAlias("ToUserName")
     private String toUserName;
 
+    @XStreamAlias("FromUserName")
     private String fromUserName;
 
+    @XStreamAlias("CreateTime")
     private Long createTime;
 
     public BaseMessage(Map<String, String> map) {
