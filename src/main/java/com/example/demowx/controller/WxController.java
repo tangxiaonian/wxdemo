@@ -74,7 +74,7 @@ public class WxController {
 
         System.out.println("消息内容为：--->"+requestMap);
 
-        switch (request.getParameter("MsgType")) {
+        switch (requestMap.get("MsgType")) {
             case "event":
                 wxService.responseEventMessage(response,requestMap);
                 break;

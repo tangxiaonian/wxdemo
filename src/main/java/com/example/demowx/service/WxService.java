@@ -2,6 +2,7 @@ package com.example.demowx.service;
 
 import com.example.demowx.domain.BaseMessage;
 import com.example.demowx.domain.ImageMessage;
+import com.example.demowx.domain.TextMessage;
 import com.thoughtworks.xstream.XStream;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -40,6 +41,7 @@ public class WxService {
      */
     public Map<String, String> requestMap(InputStream inputStream) {
         Map<String, String> infoMap = new HashMap<>();
+        // 解析xml
         SAXReader reader = new SAXReader();
         try {
             Document document = reader.read(inputStream);
@@ -109,9 +111,20 @@ public class WxService {
                 break;
             case "image":
                 baseMessage = null;
-                xStream.processAnnotations(ImageMessage.class);
+                baseMessage = messageServiceImpl.handlerImageMessage(requestMap,xStream,baseMessage);
                 break;
         }
+        responseMsg(response, baseMessage, xStream);
+    }
+
+    /**
+     * 回复消息
+     * @param response
+     * @param baseMessage
+     * @param xStream
+     */
+    private void responseMsg(HttpServletResponse response, BaseMessage baseMessage, XStream xStream) {
+        response.setCharacterEncoding("UTF-8");
         // 回复数据
         try {
             PrintWriter printWriter = response.getWriter();
@@ -136,6 +149,7 @@ public class WxService {
      */
     public void responseEventMessage(HttpServletResponse response,
                                      Map<String, String> requestMap) {
+        XStream xStream = new XStream();
 
         switch (requestMap.get("Event")) {
             case "subscribe":
@@ -144,6 +158,11 @@ public class WxService {
 
             case "unsubscribe":
 
+                break;
+
+            case "CLICK":
+                xStream.processAnnotations(TextMessage.class);
+                responseMsg(response, new TextMessage(requestMap, "收到了你点击菜单的事件..."), xStream);
                 break;
         }
 

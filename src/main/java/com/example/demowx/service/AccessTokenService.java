@@ -27,8 +27,6 @@ public class AccessTokenService {
      */
     private void getAccessToken() {
 
-        System.out.println("---->获取token.....");
-
         String formData = RestTemplateUtils.getFormData(String.format(ACCESS_TOKEN_URL,
                 wxConfig.getAppID(),
                 wxConfig.getAppSecret()));
@@ -39,6 +37,8 @@ public class AccessTokenService {
         accessTokenBean.setExpires_in( System.currentTimeMillis() + (accessTokenBean.getExpires_in() * 1000) );
 
         tokenMap.put("token", accessTokenBean);
+
+        System.out.println("获取的token....." + accessTokenBean.getAccess_token());
     }
 
     /**

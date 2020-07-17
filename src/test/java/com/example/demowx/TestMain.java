@@ -1,7 +1,11 @@
 package com.example.demowx;
 
+import com.alibaba.fastjson.JSON;
 import com.example.demowx.domain.ArticleMessage;
-import com.example.demowx.domain.TextMessage;
+import com.example.demowx.domain.button.BaseButton;
+import com.example.demowx.domain.button.ButtonVo;
+import com.example.demowx.domain.button.ClickButton;
+import com.example.demowx.domain.button.ViewButton;
 import com.thoughtworks.xstream.XStream;
 import org.junit.jupiter.api.Test;
 
@@ -12,6 +16,17 @@ import java.util.List;
 import java.util.Map;
 
 public class TestMain {
+
+    @Test
+    public void test03() {
+        ButtonVo buttonVo = new ButtonVo();
+        List<BaseButton> button = buttonVo.getButton();
+        button.add(new ClickButton("按钮1","key01"));
+        button.add(new ViewButton("按钮2","http://www.baidu.com"));
+
+        System.out.println(JSON.toJSON(buttonVo));
+
+    }
 
     @Test
     public void test01() {
